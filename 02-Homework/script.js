@@ -80,7 +80,7 @@ var questions = [
 
 setTime();
 
-  function renderQuestion(){
+  function startQuiz(){
     test = get("test");
     if(pos >= questions.length){
       test.innerHTML = "<h2>You got "+correct+" of "+questions.length+" questions correct</h2>";
@@ -96,10 +96,9 @@ setTime();
     chB = questions[pos].b;
     chC = questions[pos].c;
     test.innerHTML = "<h3>"+question+"</h3>";
-    test.innerHTML += "<label> <input type='radio' name='choices' value='A'> "+chA+"</label><br>";
-    test.innerHTML += "<label> <input type='radio' name='choices' value='B'> "+chB+"</label><br>";
-    test.innerHTML += "<label> <input type='radio' name='choices' value='C'> "+chC+"</label><br><br>";
-    test.innerHTML += "<button onclick='checkAnswer()'>Submit Answer</button>";
+    test.innerHTML += "<button onclick='checkAnswer()'type='radio' name='choices' value='A'>"+chA+"</button>";
+    test.innerHTML += "<button onclick='checkAnswer()'type='radio' name='choices' value='B'>"+chB+"</button>";
+    test.innerHTML += "<button onclick='checkAnswer()'type='radio' name='choices' value='C'>"+chC+"</button>";
   }
   function checkAnswer(){
     choices = document.getElementsByName("choices");
@@ -112,9 +111,9 @@ setTime();
       correct++;
     }
     pos++;
-    renderQuestion();
+    startQuiz();
   }
-  window.addEventListener("load", renderQuestion);
+  window.addEventListener("load", startQuiz);
   
 
     
