@@ -66,17 +66,6 @@ var questions = [
   function get(x){
     return document.getElementById(x);
   }
-  function setTime() {
-    var timerInterval = setInterval(function() {
-      secondsLeft--;
-      timeEl.textContent = secondsLeft + "  Seconds until the test is over.";
-  
-      if(secondsLeft === 0) {
-        clearInterval(timerInterval);
-        sendMessage();
-      }
-    }, 1000);
-}
 
 setTime();
 
@@ -89,6 +78,18 @@ setTime();
       correct = 0;
       return false;
     }
+
+    function setTime() {
+      var timerInterval = setInterval(function() {
+        secondsLeft--;
+        timeEl.textContent = secondsLeft + "  Seconds until the test is over.";
+    
+        if(secondsLeft === 0) {
+          clearInterval(timerInterval);
+          sendMessage();
+        }
+      }, 1000);
+  }
     get("test_status").innerHTML = "Question "+(pos+1)+" of "+questions.length;
     
     question = questions[pos].question;
@@ -114,6 +115,8 @@ setTime();
     startQuiz();
   }
   window.addEventListener("load", startQuiz);
+
+  setTime();
   
 
     
