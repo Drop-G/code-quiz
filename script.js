@@ -1,6 +1,10 @@
+
+// I saw that a multidimensional array can make it easier to loop through multiple variables 
 var pos = 0, test, test_status, question, choice, choices, chA, chB, chC, correct = 0;
+//  selects time class and main Id to update html
 var timeEl = document.querySelector(".time");
 var mainEl = document.getElementById("main");
+// starting time variable
 var secondsLeft = 60;
 
 
@@ -66,9 +70,7 @@ var questions = [
   function get(x){
     return document.getElementById(x);
   }
-
-setTime();
-
+// start quiz function begins question rendering
   function startQuiz(){
     test = get("test");
     if(pos >= questions.length){
@@ -78,20 +80,23 @@ setTime();
       correct = 0;
       return false;
     }
-
+// sets time function
     function setTime() {
       var timerInterval = setInterval(function() {
         secondsLeft--;
         timeEl.textContent = secondsLeft + "  Seconds until the test is over.";
-    
+    // looks at how many seconds are left
         if(secondsLeft === 0) {
           clearInterval(timerInterval);
           sendMessage();
         }
       }, 1000);
   }
+
+  // grabs question by locating question postition
     get("test_status").innerHTML = "Question "+(pos+1)+" of "+questions.length;
     
+// keeps track of question answers
     question = questions[pos].question;
     chA = questions[pos].a;
     chB = questions[pos].b;
@@ -101,6 +106,8 @@ setTime();
     test.innerHTML += "<button onclick='checkAnswer()'type='radio' name='choices' value='B'>"+chB+"</button>";
     test.innerHTML += "<button onclick='checkAnswer()'type='radio' name='choices' value='C'>"+chC+"</button>";
   }
+
+  // checks answer by looking at answer pos
   function checkAnswer(){
     choices = document.getElementsByName("choices");
     for(var i=0; i<choices.length; i++){
