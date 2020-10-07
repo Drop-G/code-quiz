@@ -1,17 +1,40 @@
-<html>
-<head>
-    <title>Quiz</title>
-    <script src="script.js"></script>
-</head>
-<body>
-<header>
-    <div class= container-fluid></div>
-        <div class= "row" ></div>
-            <div class= "col-sm-6 time"></div>
-            <div class = "col-sm-6" id="main"></div>
-</header>
-        <h2 id="test_status"></h2>
-        <div id="test"></div>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Coding Quiz</title>
+  </head>
+
+  <body>
+
+    <div class="timer">Time: <span id="time">0</span></div>
+
+    <div class="wrapper">
+      <div id="start-screen" class="start">
+        <h1>Coding Quiz Challenge</h1>
+        <p>
+          Answer these questions in the alloted time frame and recieve a score based on your speed and accuracy. 
+        </p>
+        <button id="start">Start Quiz</button>
+      </div>
+
+      <div id="questions" class="hide">
+        <h2 id="question-title"></h2>
+        <div id="choices" class="choices"></div>
+      </div>
+      <div id="end-screen" class="hide">
+        <h2>All done!</h2>
+        <p>Your final score is <span id="final-score"></span>.</p>
+        <p>
+          Enter initials: <input type="text" id="initials" max="3" />
+          <button id="submit">Submit</button>
+        </p>
+      </div>
+
+      <div id="feedback" class="feedback hide"></div>
     </div>
-</body>
+    <script src="script.js"></script>
+  </body>
 </html>

@@ -1,135 +1,212 @@
+var currentQuestionIndex = 0;
+var time = questions.length * 15;
+var timerId;
 
-// I saw that a multidimensional array can make it easier to loop through multiple variables 
-var pos = 0, test, test_status, question, choice, choices, chA, chB, chC, correct = 0;
-//  selects time class and main Id to update html
-var timeEl = document.querySelector(".time");
-var mainEl = document.getElementById("main");
-// starting time variable
-var secondsLeft = 60;
-
+// variables to reference DOM elements
+var questionsEl = document.getElementById('questions');
+var timerEl = document.getElementById('time');
+var choicesEl = document.getElementById('choices');
+var submitBtn = document.getElementById('submit');
+var startBtn = document.getElementById('start');
+var initialsEl = document.getElementById('initials');
+var feedbackEl = document.getElementById('feedback');
 
 var questions = [
   {
       question: "What does HTML stand for?",
-      a: "Hyper Text Markup Lingo",
-      b: "Hyper Text Makeup Label",
-      c: "Hyper Text Markup Language",
-      answer: "C"
+      choices: ["Hyper Text Markup Lingo", "Hyper Text Makeup Label", "Hyper Text Markup Language"],
+      answer: "Hyper Text Markup Language"
     },
   {
       question: "What does CSS stand for?",
-      a: "Castle Stronghold Sanctuary",
-      b: "Cascading Style Sheet",
-      c: "Cringy Silent Suburbia",
-      answer: "B"
+      choices: ["Castle Stronghold Sanctuary","Cascading Style Sheet","Cringy Silent Suburbia"],
+      answer: "Cascading Style Sheet"
     },
   {
       question: "What is an Example of a symanctic HTML element?",
-      a: "div",
-      b: "nav",
-      c: "img",
-      answer: "B"
+      a: ["div", "nav", "img"],
+      answer: "nav"
     },
   {
       question: "What is a CDN",
-      a: "Credit Dentist Network",
-      b: "Content Delivery Network",
-      c: "Crying Dad Nuptual",
-      answer: "B"
+      choices: ["Credit Dentist Network", "Content Delivery Network", "Crying Dad Nuptual"],
+      answer: "Content Delivery Network"
     },
   {
-      question: "Which of these can you use with an image to boost SEO?",
-      a: "div",
-      b: "nav",
-      c: "alt = ",
-      answer: "C"
+      question: "Which of these would be used with an image object to boost SEO?",
+      choices: ["div", "nav", "alt = "],
+      answer: "alt = "
     },
   {
       question: "what command can help find problems in the browswer?",
-      a: "console.log()",
-      b: "search",
-      c: "google",
-      answer: "A"
+      choices: ["console.log()", "search", "google"],
+      answer: "console.log()"
     },
   {
       question: "Whcih symbold is asscociated with JQuery",
-      a: "?",
-      b: "$",
-      c: "%",
-      answer: "B"
+      choices: ["?", "$", "%"],
+      answer: "$"
     },
   {
       question: "which do you use to clone a repository from gitHub",
-      a: "git add",
-      b: "git commit",
-      c: "git clone",
-      answer: "C"
+      choices: ["git add", "git commit", "git clone"],
+      answer: "git clone"
     }
   ];
-
-  function get(x){
-    return document.getElementById(x);
-  }
-// start quiz function begins question rendering
-  function startQuiz(){
-    test = get("test");
-    if(pos >= questions.length){
-      test.innerHTML = "<h2>You got "+correct+" of "+questions.length+" questions correct</h2>";
-      get("test_status").innerHTML = "Test completed";
-      pos = 0;
-      correct = 0;
-      return false;
-    }
-// sets time function
-    function setTime() {
-      var timerInterval = setInterval(function() {
-        secondsLeft--;
-        timeEl.textContent = secondsLeft + "  Seconds until the test is over.";
-    // looks at how many seconds are left
-        if(secondsLeft === 0) {
-          clearInterval(timerInterval);
-          sendMessage();
-        }
-      }, 1000);
-  }
-
-  // grabs question by locating question postition
-    get("test_status").innerHTML = "Question "+(pos+1)+" of "+questions.length;
-    
-// keeps track of question answers
-    question = questions[pos].question;
-    chA = questions[pos].a;
-    chB = questions[pos].b;
-    chC = questions[pos].c;
-    test.innerHTML = "<h3>"+question+"</h3>";
-    test.innerHTML += "<button onclick='checkAnswer()'type='radio' name='choices' value='A'>"+chA+"</button>";
-    test.innerHTML += "<button onclick='checkAnswer()'type='radio' name='choices' value='B'>"+chB+"</button>";
-    test.innerHTML += "<button onclick='checkAnswer()'type='radio' name='choices' value='C'>"+chC+"</button>";
-  }
-
-  // checks answer by looking at answer pos
-  function checkAnswer(){
-    choices = document.getElementsByName("choices");
-    for(var i=0; i<choices.length; i++){
-      if(choices[i].checked){
-        choice = choices[i].value;
-      }
-    }
-    if(choice == questions[pos].answer){
-      correct++;
-    }
-    pos++;
-    startQuiz();
-  }
-  window.addEventListener("load", startQuiz);
-
-  setTime();
   
-
-    
-
-
-
+  function startQuiz() {
+    // hide start screen
+    var startScreenEl = document.getElementById('start-screen');
+    startScreenEl.setAttribute('class', 'hide');
+  
+    // un-hide questions section
+    questionsEl.removeAttribute('class');
+  
+    // start timer
+    timerId = setInterval(clockTick, 1000);
+  
+    // show starting time
+    timerEl.textContent = time;
+  
+    getQuestion();
+  }
+  
+  function getQuestion() {
+    // get current question object from array
+    var currentQuestion = questions[currentQuestionIndex];
+  
+    // update title with current question
+    var titleEl = document.getElementById('question-title');
+    titleEl.textContent = currentQuestion.title;
+  
+    // clear out any old question choices
+    choicesEl.innerHTML = '';
+  
+    // loop over choices
+    currentQuestion.choices.forEach(function (choice, i) {
+      // create new button for each choice
+      var choiceNode = document.createElement('button');
+      choiceNode.setAttribute('class', 'choice');
+      choiceNode.setAttribute('value', choice);
+  
+      choiceNode.textContent = i + 1 + '. ' + choice;
+  
+      // attach click event listener to each choice
+      choiceNode.onclick = questionClick;
+  
+      // display on the page
+      choicesEl.appendChild(choiceNode);
+    });
+  }
+  
+  function questionClick() {
+    // check if user guessed wrong
+    if (this.value !== questions[currentQuestionIndex].answer) {
+      // penalize time
+      time -= 15;
+  
+      if (time < 0) {
+        time = 0;
+      }
+  
+      // display new time on page
+      timerEl.textContent = time;
+  
+      // play "wrong" sound effect
+      sfxWrong.play();
+  
+      feedbackEl.textContent = 'Wrong!';
+    } else {
+      // play "right" sound effect
+      sfxRight.play();
+  
+      feedbackEl.textContent = 'Correct!';
+    }
+  
+    // flash right/wrong feedback on page for half a second
+    feedbackEl.setAttribute('class', 'feedback');
+    setTimeout(function () {
+      feedbackEl.setAttribute('class', 'feedback hide');
+    }, 1000);
+  
+    // move to next question
+    currentQuestionIndex++;
+  
+    // check if we've run out of questions
+    if (currentQuestionIndex === questions.length) {
+      quizEnd();
+    } else {
+      getQuestion();
+    }
+  }
+  
+  function quizEnd() {
+    // stop timer
+    clearInterval(timerId);
+  
+    // show end screen
+    var endScreenEl = document.getElementById('end-screen');
+    endScreenEl.removeAttribute('class');
+  
+    // show final score
+    var finalScoreEl = document.getElementById('final-score');
+    finalScoreEl.textContent = time;
+  
+    // hide questions section
+    questionsEl.setAttribute('class', 'hide');
+  }
+  
+  function clockTick() {
+    // update time
+    time--;
+    timerEl.textContent = time;
+  
+    // check if user ran out of time
+    if (time <= 0) {
+      quizEnd();
+    }
+  }
+  
+  function saveHighscore() {
+    // get value of input box
+    var initials = initialsEl.value.trim();
+  
+    // make sure value wasn't empty
+    if (initials !== '') {
+      // get saved scores from localstorage, or if not any, set to empty array
+      var highscores =
+        JSON.parse(window.localStorage.getItem('highscores')) || [];
+  
+      // format new score object for current user
+      var newScore = {
+        score: time,
+        initials: initials,
+      };
+  
+      // save to localstorage
+      highscores.push(newScore);
+      window.localStorage.setItem('highscores', JSON.stringify(highscores));
+  
+      // redirect to next page
+      window.location.href = 'highscores.html';
+    }
+  }
+  
+  function checkForEnter(event) {
+    // "13" represents the enter key
+    if (event.key === 'Enter') {
+      saveHighscore();
+    }
+  }
+  
+  // user clicks button to submit initials
+  submitBtn.onclick = saveHighscore;
+  
+  // user clicks button to start quiz
+  startBtn.onclick = startQuiz;
+  
+  initialsEl.onkeyup = checkForEnter;
+  
 
 
 
